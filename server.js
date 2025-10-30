@@ -162,9 +162,9 @@ app.post('/api/upload', upload.single('pdf'), async (req, res) => {
     const outputPath = path.join(__dirname, 'tracked-pdfs', outputFileName);
     
     // Get server URL (use ngrok URL if available, otherwise localhost)
-    const serverUrl = req.get('host').includes('localhost') 
-      ? `http://localhost:${PORT}`
-      : `http://${req.get('host')}`;
+        const serverUrl = req.get('host').includes('localhost')
+        ? `http://localhost:${PORT}`
+        : `https://${req.get('host')}`;
     
     // Inject tracking into PDF
     await injectTrackingIntoPDF(inputPath, outputPath, trackingId, serverUrl);
