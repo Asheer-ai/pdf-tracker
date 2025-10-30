@@ -1,3 +1,5 @@
+const dotenv=require('dotenv')
+dotenv.config()
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -6,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const { PDFDocument, rgb } = require('pdf-lib');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Create necessary directories
 const dirs = ['uploads', 'tracked-pdfs', 'data'];
