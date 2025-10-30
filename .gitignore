@@ -1,0 +1,5 @@
+node_modules/
+uploads/
+tracked-pdfs/
+data/
+.env

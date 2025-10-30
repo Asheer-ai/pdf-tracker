@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Tracker - Embed Tracking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .info-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .info-box h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            color: #78350f;
+            margin-left: 20px;
+        }
+        
+        .info-box li {
+            margin: 5px 0;
+        }
+        
+        .upload-section {
+            text-align: center;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .file-input-label {
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            display: inline-block;
+        }
+        
+        .file-input-label:hover {
+            background: #5568d3;
+        }
+        
+        .upload-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        
+        .upload-btn:hover {
+            background: #059669;
+        }
+        
+        .upload-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+        
+        .result h3 {
+            color: #059669;
+            margin-bottom: 15px;
+        }
+        
+        .download-tracked-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .download-tracked-btn:hover {
+            background: #5568d3;
+        }
+        
+        .stats-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .pdf-item {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .pdf-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+        
+        .download-btn {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background: #2563eb;
+        }
+        
+        .test-btn {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .test-btn:hover {
+            background: #d97706;
+        }
+        
+        .refresh-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .refresh-btn:hover {
+            background: #2563eb;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+        }
+        
+        .selected-file {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .access-log {
+            background: #f3f4f6;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        .access-log-item {
+            padding: 5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .access-log-item:last-child {
+            border-bottom: none;
+        }
+        
+        .toggle-logs {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        .toggle-logs:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 PDF Tracker</h1>
+        <p class="subtitle">Inject tracking into PDFs - Share them anywhere!</p>
+        
+        <div class="card">
+            <div class="info-box">
+                <h3>🎯 How It Works</h3>
+                <ul>
+                    <li>Upload your PDF - we'll inject invisible tracking</li>
+                    <li>Download the tracked PDF</li>
+                    <li>Share it anywhere: email attachments, website uploads, cloud storage</li>
+                    <li>When someone opens it, we'll log the access (if their PDF viewer allows)</li>
+                </ul>
+                <br>
+                <strong>⚠️ Important:</strong> Tracking works best with modern PDF viewers (Adobe Reader, Chrome, Edge). May not work with all email clients or corporate PDF viewers due to security restrictions.
+            </div>
+        </div>
+        
+        <div class="card upload-section">
+            <h2>Upload PDF</h2>
+            <div class="file-input-wrapper">
+                <input type="file" id="pdfFile" accept="application/pdf">
+                <label for="pdfFile" class="file-input-label">📁 Choose PDF File</label>
+            </div>
+            <div class="selected-file" id="selectedFile"></div>
+            <br>
+            <button class="upload-btn" id="uploadBtn" disabled>🚀 Process & Add Tracking</button>
+            
+            <div id="uploadResult" style="display: none;" class="result">
+                <h3>✅ PDF Processed Successfully!</h3>
+                <p><strong>Your tracked PDF is ready. Download it and share anywhere:</strong></p>
+                <a id="downloadTrackedLink" class="download-tracked-btn" download>📥 Download Tracked PDF</a>
+                <p style="margin-top: 15px; font-size: 14px; color: #666;">
+                    This PDF now contains invisible tracking. When someone opens it, you'll see it in the statistics below.
+                </p>
+            </div>
+        </div>
+        
+        <div class="card stats-section">
+            <h2>📊 Your Tracked PDFs</h2>
+            <button class="refresh-btn" onclick="loadStats()">🔄 Refresh Stats</button>
+            <div id="statsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('pdfFile');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const selectedFile = document.getElementById('selectedFile');
+        const uploadResult = document.getElementById('uploadResult');
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                uploadBtn.disabled = false;
+                selectedFile.textContent = `Selected: ${e.target.files[0].name}`;
+            } else {
+                uploadBtn.disabled = true;
+                selectedFile.textContent = '';
+            }
+        });
+        
+        uploadBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('pdf', file);
+            
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳ Processing PDF...';
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('downloadTrackedLink').href = data.downloadUrl;
+                    uploadResult.style.display = 'block';
+                    
+                    fileInput.value = '';
+                    selectedFile.textContent = '';
+                    
+                    // Scroll to result
+                    uploadResult.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Reload stats
+                    setTimeout(() => loadStats(), 1000);
+                }
+            } catch (error) {
+                alert('Upload failed: ' + error.message);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '🚀 Process & Add Tracking';
+            }
+        });
+        
+        function toggleLogs(trackingId) {
+            const logsDiv = document.getElementById(`logs-${trackingId}`);
+            const btn = document.getElementById(`toggle-btn-${trackingId}`);
+            
+            if (logsDiv.style.display === 'none') {
+                logsDiv.style.display = 'block';
+                btn.textContent = 'Hide Logs';
+            } else {
+                logsDiv.style.display = 'none';
+                btn.textContent = 'Show Logs';
+            }
+        }
+        
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                const container = document.getElementById('statsContainer');
+                
+                if (Object.keys(data).length === 0) {
+                    container.innerHTML = '<div class="empty-state">No PDFs uploaded yet. Upload your first PDF above!</div>';
+                    return;
+                }
+                
+                let html = '';
+                for (const [trackingId, pdf] of Object.entries(data)) {
+                    const logsHtml = pdf.accessLogs.length > 0 
+                        ? pdf.accessLogs.map(log => `
+                            <div class="access-log-item">
+                                <strong>${new Date(log.timestamp).toLocaleString()}</strong><br>
+                                IP: ${log.ip}<br>
+                                ${log.userAgent ? `User Agent: ${log.userAgent.substring(0, 50)}...` : ''}
+                            </div>
+                        `).join('')
+                        : '<div class="access-log-item">No opens recorded yet</div>';
+                    
+                    html += `
+                        <div class="pdf-item">
+                            <div class="pdf-header">
+                                <div class="pdf-name">📄 ${pdf.originalName}</div>
+                            </div>
+                            <div class="stats">
+                                <div class="stat">
+                                    <div class="stat-label">Total Opens</div>
+                                    <div class="stat-value">${pdf.totalOpens}</div>
+                                </div>
+                            </div>
+                            <small style="color: #666;">Uploaded: ${new Date(pdf.uploadedAt).toLocaleString()}</small>
+                            
+                            <div class="action-buttons">
+                                <a href="/download-tracked/${trackingId}" class="btn download-btn" download>📥 Download</a>
+                                <a href="/test-track/${trackingId}" target="_blank" class="btn test-btn">🧪 Test Track</a>
+                                <button class="btn delete-btn" onclick="deletePDF('${trackingId}')">🗑️ Delete</button>
+                            </div>
+                            
+                            <button class="toggle-logs" id="toggle-btn-${trackingId}" onclick="toggleLogs('${trackingId}')">
+                                Show Logs (${pdf.accessLogs.length})
+                            </button>
+                            
+                            <div id="logs-${trackingId}" class="access-log" style="display: none;">
+                                ${logsHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+        
+        async function deletePDF(trackingId) {
+            if (!confirm('Are you sure you want to delete this PDF?')) return;
+            
+            try {
+                const response = await fetch(`/api/delete/${trackingId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    loadStats();
+                }
+            } catch (error) {
+                alert('Delete failed: ' + error.message);
+            }
+        }
+        
+        // Load stats on page load
+        loadStats();
+        
+        // Auto-refresh stats every 30 seconds
+        setInterval(loadStats, 30000);
+    </script>
+</body>
+</html>
